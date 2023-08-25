@@ -17,6 +17,7 @@ const resetPassApi = '$baseUrl/reset-pass';
 const allCategoryApi = '$baseUrl/category-all';
 const getAllPostApi = '$baseUrl/post-all';
 const likeUnlikeApi = '$baseUrl/like-unlike/';
+const createPostApi = '$baseUrl/post-create';
 
 
 

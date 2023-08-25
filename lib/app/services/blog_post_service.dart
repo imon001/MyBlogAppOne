@@ -3,6 +3,7 @@
 import 'package:blog/app/models/dashboard/like_unlike.dart';
 import 'package:blog/app/models/response_status.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 import '../constants/api_string.dart';
@@ -11,7 +12,7 @@ import '../constants/helper_function.dart';
 import '../models/api_response.dart';
 import '../models/dashboard/blog_post.dart';
 
-class PostService {
+class BlogPostService {
   Future<ApiResponse> getAllPost() async {
     ApiResponse apiResponse = ApiResponse();
     try {
@@ -73,6 +74,51 @@ class PostService {
     } catch (e) {
       apiResponse.error = SOMETHING_WENT_WRONG;
     }
+    return apiResponse;
+  }
+
+  Future<ApiResponse> createPost(Map<String, dynamic> content, List<String> images) async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      final token = await getToken();
+      var headers = {
+        'Authorization': 'Bearer $token',
+      };
+
+      var url = Uri.parse(createPostApi);
+
+      var request = http.MultipartRequest("POST", url);
+
+      request.headers.addAll(headers);
+
+      for (var img in images) {
+        String ext = img.split('.').last;
+
+        var file = await http.MultipartFile.fromPath("images", img, contentType: MediaType('image', ext));
+        request.files.add(file);
+      }
+
+      request.fields["title"] = content["title"];
+      request.fields["description"] = content["description"];
+      request.fields["categoryId"] = content["categoryId"];
+
+      final response = await request.send();
+      final responseData = await response.stream.toBytes();
+
+      final responseString = String.fromCharCodes(responseData);
+      // final responseString = String.fromCharCode(responseData);
+
+      final json = jsonDecode(responseString);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        apiResponse.data = ResponseStatus.fromJson(json);
+      } else {
+        apiResponse.error = handleError(response.statusCode, json);
+      }
+    } catch (e) {
+      apiResponse.error = SOMETHING_WENT_WRONG;
+    }
+
     return apiResponse;
   }
 }

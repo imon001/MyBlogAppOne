@@ -44,6 +44,8 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   double_back_to_close_app: ^2.1.0
   dropdown_search: ^3.0.1
+  image_picker: ^1.0.2
+  http_parser: ^4.0.2
   
 dev_dependencies:
   flutter_test:

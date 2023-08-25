@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:blog/app/constants/api_string.dart';
-import 'package:blog/app/constants/colors.dart';
-import 'package:blog/app/constants/helper_function.dart';
-import 'package:blog/app/models/auth/user.dart';
-import 'package:blog/app/models/dashboard/blog_post.dart';
-import 'package:blog/app/models/dashboard/post_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../constants/api_string.dart';
+import '../../../constants/colors.dart';
+import '../../../constants/helper_function.dart';
+import '../../../models/auth/user.dart';
+import '../../../models/dashboard/blog_post.dart';
+import '../../../models/dashboard/post_category.dart';
 
 class PostDetailsView extends StatelessWidget {
   const PostDetailsView({super.key, required this.blogPost});
@@ -35,6 +36,7 @@ class PostDetailsView extends StatelessWidget {
             SizedBox(
               height: 5.w,
             ),
+            _thumbnail(),
             _images(),
             SizedBox(
               height: 5.w,
@@ -91,9 +93,23 @@ class PostDetailsView extends StatelessWidget {
     );
   }
 
+  Widget _thumbnail() {
+    final thumbnail = blogPost.thumbnail != null ? blogPost.thumbnail as String : "";
+    final thumbnailLink = imageBaseUrl + thumbnail;
+    return thumbnail.isEmpty
+        ? Container()
+        : Padding(
+            padding: EdgeInsets.symmetric(vertical: 3.w),
+            child: Image.network(
+              thumbnailLink,
+              fit: BoxFit.contain,
+              width: double.infinity,
+            ),
+          );
+  }
+
   Widget _images() {
     final images = (blogPost.images != null) || (blogPost.images!.isNotEmpty) ? blogPost.images as List<String> : <String>[];
-    images.insert(0, blogPost.thumbnail ?? "");
     return Column(
       children: List.generate(images.length, (index) {
         String image = images[index];
