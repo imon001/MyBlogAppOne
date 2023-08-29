@@ -74,6 +74,8 @@ void logOut() {
   _storage.remove(USER_NAME);
   _storage.remove(USER_EMAIL);
   _storage.remove(USER_AVATAR);
+  _storage.remove(USER_ID);
+
   _secureStorage.delete(key: AUTH_TOKEN);
 
   Get.offAll(() => SplashScreen());
@@ -122,4 +124,8 @@ getCustomeDate(String date) {
   String newDate = '$newDay-$newMonth-$year';
 
   return newDate;
+}
+
+String get userId {
+  return _storage.read(USER_ID) ?? "";
 }

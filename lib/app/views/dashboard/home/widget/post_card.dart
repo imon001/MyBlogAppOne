@@ -8,6 +8,7 @@ import 'package:blog/app/models/auth/user.dart';
 import 'package:blog/app/models/dashboard/blog_post.dart';
 import 'package:blog/app/models/dashboard/post_category.dart';
 import 'package:blog/app/views/dashboard/home/post_details_view.dart';
+import 'package:blog/app/views/dashboard/post/edit%20post/edit_post_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class PostCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _titleAndMoreButton(),
+              _titleAndMoreButton(context),
               SizedBox(
                 height: 5.w,
               ),
@@ -61,7 +62,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  Widget _titleAndMoreButton() {
+  Widget _titleAndMoreButton(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -73,10 +74,52 @@ class PostCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        GestureDetector(
-          child: Icon(Icons.more_vert),
-          onTap: () {},
-        )
+        PopupMenuButton(onSelected: (value) {
+          switch (value) {
+            case 'save':
+              //
+              break;
+            case 'edit':
+              Get.to(() => EditPostView());
+              break;
+            case 'delete':
+              //
+              break;
+            default:
+          }
+        }, itemBuilder: (context) {
+          User owner = blogPost.user != null ? blogPost.user as User : User();
+
+          return <PopupMenuItem>[
+            if (owner.id != userId)
+              PopupMenuItem(
+                  value: 'save',
+                  child: Text(
+                    'Save',
+                    style: TextStyle(fontSize: 16.sp),
+                  )),
+            if (owner.id == userId)
+              PopupMenuItem(
+                  value: 'edit',
+                  child: Text(
+                    'Edit',
+                    style: TextStyle(fontSize: 16.sp),
+                  )),
+            if (owner.id == userId)
+              PopupMenuItem(
+                  value: 'delete',
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(fontSize: 16.sp),
+                  )),
+          ];
+        })
+        // GestureDetector(
+        //   child: Icon(Icons.more_vert),
+        //   onTap: () {
+
+        //   },
+        // )
       ],
     );
   }

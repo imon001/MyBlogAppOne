@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:blog/app/views/dashboard/post/edit%20post/edit_post_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../constants/api_string.dart';
 import '../../../constants/colors.dart';
@@ -17,12 +19,22 @@ class PostDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User owner = blogPost.user != null ? blogPost.user as User : User();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("details Page"),
         centerTitle: true,
         backgroundColor: kBaseColor,
         elevation: 0,
+        actions: [
+          if (owner.id == userId)
+            IconButton(
+                onPressed: () {
+                  Get.to(() => EditPostView());
+                },
+                icon: Icon(Icons.edit_note))
+        ],
       ),
       body: SafeArea(
           child: Padding(

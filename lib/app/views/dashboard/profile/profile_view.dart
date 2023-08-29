@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:blog/app/constants/helper_function.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatelessWidget {
@@ -11,7 +12,18 @@ class ProfileView extends StatelessWidget {
       backgroundColor: Colors.blue,
       body: SafeArea(
           child: Center(
-        child: Text('Profile View'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Profile View'),
+            MaterialButton(
+              onPressed: () {
+                logOut();
+              },
+              child: Text('Log Out'),
+            )
+          ],
+        ),
       )),
     );
   }

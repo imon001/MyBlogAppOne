@@ -7,6 +7,7 @@ const USER_NAME = "userName";
 const USER_EMAIL = "userEmail";
 const USER_AVATAR = "userAvatar";
 const AUTH_TOKEN = "authToken";
+const USER_ID = "userId";
 
 //errors
 const SERVER_ERROR = 'internal server error';

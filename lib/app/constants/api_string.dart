@@ -1,11 +1,11 @@
 //baseUrl
-const baseUrl = 'http://192.169.0.112:5000/api/v1/user';
+//const baseUrl = 'http://192.169.0.112:5000/api/v1/user';
 
-//const baseUrl = 'http://192.168.0.101:5000/api/v1/user';
+const baseUrl = 'http://192.168.0.101:5000/api/v1/user';
 
 //imageUrl
-//const imageBaseUrl = 'http://192.168.0.101:5000/';
-const imageBaseUrl = 'http://192.169.0.112:5000/';
+const imageBaseUrl = 'http://192.168.0.101:5000/';
+//const imageBaseUrl = 'http://192.169.0.112:5000/';
 
 //auth-apis
 const loginApi = '$baseUrl/login';
