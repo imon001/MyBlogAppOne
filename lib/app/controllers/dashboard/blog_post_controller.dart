@@ -1,5 +1,6 @@
 import 'package:blog/app/models/dashboard/like_unlike.dart';
 import 'package:blog/app/models/response_status.dart';
+import 'package:blog/app/views/dashboard/dashboard/dashboard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,16 +18,82 @@ class BlogPostController extends GetxController {
   var loadingData = false.obs;
   var likeUnlikeLoading = false.obs;
   final _imagePicker = ImagePicker();
+  var selectedCategory = "All Category".obs;
 
   String selectedCategoryId = "";
   String title = "";
   String description = "";
 
+  String editCategoryId = "";
+  String editTitle = "";
+  String editDescription = "";
+
+  var isNetworkImage = false.obs;
+  String deletedThumbnail = "";
+  var networkImage = <String>[].obs;
+  var deletedImage = <String>[];
+
   var thumbnailPaths = "".obs;
   var imagesPaths = <String>[].obs;
   var creatingPost = false.obs;
+  var updatingPost = false.obs;
 
   //var selectedCategoryId = "";
+  editPost(String postId) async {
+    if (!updatingPost.value) {
+      updatingPost.value = true;
+      if (editCategoryId.isNotEmpty) {
+        if (thumbnailPaths.isNotEmpty) {
+          final content = {
+            "title": editTitle,
+            "description": editDescription,
+            "postId": postId,
+            "categoryId": editCategoryId,
+            "deletedThumbnail": deletedThumbnail,
+          };
+          if (!isNetworkImage.value) {
+            imagesPaths.insert(0, thumbnailPaths.value);
+          }
+          final response = await _postService.editPost(content, imagesPaths, deletedImage);
+          if (response.error == null) {
+            final responseStatus = response.data != null ? response.data as ResponseStatus : ResponseStatus();
+            bool success = responseStatus.success ?? false;
+
+            if (success) {
+              editTitle = "";
+              editDescription = "";
+              editCategoryId = "";
+              thumbnailPaths.value = "";
+              deletedThumbnail = "";
+              imagesPaths.clear();
+              deletedImage.clear();
+              getAllPost();
+              Get.offAll(() => const DashboardView());
+              updatingPost.value = false;
+            } else {
+              updatingPost.value = false;
+              showError(error: responseStatus.message ?? "");
+            }
+          } else if (response.error == UN_AUTHERNTICATED) {
+            updatingPost.value = false;
+            logOut();
+          } else {
+            updatingPost.value = false;
+            showError(error: response.error ?? "");
+          }
+        } else {
+          updatingPost.value = false;
+          showError(error: "select a thumbnail", title: "Thumbnail");
+        }
+      } else {
+        updatingPost.value = false;
+        showError(error: "select a category", title: "Category");
+      }
+    }
+  }
+
+//updatingPost
+
   createPost() async {
     if (!creatingPost.value) {
       creatingPost.value = true;
@@ -37,6 +104,7 @@ class BlogPostController extends GetxController {
             "description": description,
             "categoryId": selectedCategoryId,
           };
+
           imagesPaths.insert(0, thumbnailPaths.value);
 
           final response = await _postService.createPost(content, imagesPaths);
@@ -83,10 +151,14 @@ class BlogPostController extends GetxController {
     }
   }
 
-  selectThumnail() async {
+  selectThumnail({String? thumbnail}) async {
     var pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
+      if (isNetworkImage.value) {
+        deletedThumbnail = thumbnail ?? "";
+        isNetworkImage.value = false;
+      }
       thumbnailPaths.value = pickedFile.path;
     } else {
       Get.snackbar(

@@ -1,10 +1,10 @@
 //baseUrl
 //const baseUrl = 'http://192.169.0.112:5000/api/v1/user';
 
-const baseUrl = 'http://192.168.0.101:5000/api/v1/user';
+const baseUrl = 'http://192.168.0.101:3000/api/v1/user';
 
 //imageUrl
-const imageBaseUrl = 'http://192.168.0.101:5000/';
+const imageBaseUrl = 'http://192.168.0.101:3000/';
 //const imageBaseUrl = 'http://192.169.0.112:5000/';
 
 //auth-apis
@@ -18,6 +18,8 @@ const allCategoryApi = '$baseUrl/category-all';
 const getAllPostApi = '$baseUrl/post-all';
 const likeUnlikeApi = '$baseUrl/like-unlike/';
 const createPostApi = '$baseUrl/post-create';
+const editPostApi = '$baseUrl/post-edit';
+
 
 
 

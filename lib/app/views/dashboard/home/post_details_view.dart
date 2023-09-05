@@ -31,7 +31,9 @@ class PostDetailsView extends StatelessWidget {
           if (owner.id == userId)
             IconButton(
                 onPressed: () {
-                  Get.to(() => EditPostView());
+                  Get.to(() => EditPostView(
+                        blogPost: blogPost,
+                      ));
                 },
                 icon: Icon(Icons.edit_note))
         ],
