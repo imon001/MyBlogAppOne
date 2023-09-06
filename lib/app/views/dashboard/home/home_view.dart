@@ -63,6 +63,7 @@ class HomeView extends StatelessWidget {
                             return PostCard(
                               blogPost: post,
                               index: index,
+                              isDeleted: false,
                             );
                           }),
                         );

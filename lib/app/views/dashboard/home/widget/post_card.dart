@@ -18,9 +18,11 @@ class PostCard extends StatelessWidget {
     super.key,
     required this.blogPost,
     required this.index,
+    required this.isDeleted,
   });
   final BlogPost blogPost;
   final int index;
+  final bool isDeleted;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -85,8 +87,12 @@ class PostCard extends StatelessWidget {
                   ));
               break;
             case 'delete':
-              //
+              Get.find<BlogPostController>().deletePost(blogPost.id ?? "", index);
               break;
+            case 'permanent_delete':
+              Get.find<BlogPostController>().deletePostPermanent(blogPost.id ?? "", index);
+              break;
+
             default:
           }
         }, itemBuilder: (context) {
@@ -100,18 +106,25 @@ class PostCard extends StatelessWidget {
                     'Save',
                     style: TextStyle(fontSize: 16.sp),
                   )),
-            if (owner.id == userId)
+            if (owner.id == userId && !isDeleted)
               PopupMenuItem(
                   value: 'edit',
                   child: Text(
                     'Edit',
                     style: TextStyle(fontSize: 16.sp),
                   )),
-            if (owner.id == userId)
+            if (owner.id == userId && !isDeleted)
               PopupMenuItem(
                   value: 'delete',
                   child: Text(
                     'Delete',
+                    style: TextStyle(fontSize: 16.sp),
+                  )),
+            if (owner.id == userId && isDeleted)
+              PopupMenuItem(
+                  value: 'permanent_delete',
+                  child: Text(
+                    'Delete Permanently',
                     style: TextStyle(fontSize: 16.sp),
                   )),
           ];
