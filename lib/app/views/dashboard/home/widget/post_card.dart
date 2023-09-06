@@ -19,10 +19,12 @@ class PostCard extends StatelessWidget {
     required this.blogPost,
     required this.index,
     required this.isDeleted,
+    required this.isSaved,
   });
   final BlogPost blogPost;
   final int index;
   final bool isDeleted;
+  final bool isSaved;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -79,7 +81,8 @@ class PostCard extends StatelessWidget {
         PopupMenuButton(onSelected: (value) {
           switch (value) {
             case 'save':
-              //
+              Get.find<BlogPostController>().savePost(blogPost.id ?? "");
+
               break;
             case 'edit':
               Get.to(() => EditPostView(
@@ -92,6 +95,9 @@ class PostCard extends StatelessWidget {
             case 'permanent_delete':
               Get.find<BlogPostController>().deletePostPermanent(blogPost.id ?? "", index);
               break;
+            case 'remove':
+              Get.find<BlogPostController>().removeSavedPost(blogPost.id ?? "", index);
+              break;
 
             default:
           }
@@ -99,11 +105,18 @@ class PostCard extends StatelessWidget {
           User owner = blogPost.user != null ? blogPost.user as User : User();
 
           return <PopupMenuItem>[
-            if (owner.id != userId)
+            if (owner.id != userId && !isSaved)
               PopupMenuItem(
                   value: 'save',
                   child: Text(
                     'Save',
+                    style: TextStyle(fontSize: 16.sp),
+                  )),
+            if (owner.id != userId && isSaved)
+              PopupMenuItem(
+                  value: 'remove',
+                  child: Text(
+                    'Remove',
                     style: TextStyle(fontSize: 16.sp),
                   )),
             if (owner.id == userId && !isDeleted)

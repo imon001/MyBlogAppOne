@@ -5,6 +5,8 @@ import 'package:blog/app/views/dashboard/post/deleted_posts/deleted_post_view.da
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../post/saved_posts/saved_post_view.dart';
+
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
@@ -19,7 +21,9 @@ class ProfileView extends StatelessWidget {
           children: [
             Text('Profile View'),
             MaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(() => SavePostView());
+              },
               child: Text('all saved posts'),
             ),
             MaterialButton(

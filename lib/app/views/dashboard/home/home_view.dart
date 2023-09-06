@@ -64,6 +64,7 @@ class HomeView extends StatelessWidget {
                               blogPost: post,
                               index: index,
                               isDeleted: false,
+                              isSaved: false,
                             );
                           }),
                         );

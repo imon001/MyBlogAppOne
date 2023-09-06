@@ -15,11 +15,15 @@ class BlogPostController extends GetxController {
   final _postService = BlogPostService();
   var allPost = <BlogPost>[].obs;
   var deletedPost = <BlogPost>[].obs;
+  var savedPost = <BlogPost>[].obs;
 
   var loadingData = false.obs;
-  var getingDeteledPost = false.obs;
   var likeUnlikeLoading = false.obs;
   var deletingPost = false.obs;
+  var getDeletedPosts = false.obs;
+  var savingPost = false.obs;
+  var removingSavePost = false.obs;
+  var getSavingPosts = false.obs;
 
   final _imagePicker = ImagePicker();
   var selectedCategory = "All Category".obs;
@@ -235,6 +239,13 @@ class BlogPostController extends GetxController {
         final responseStatus = response.data != null ? response.data as ResponseStatus : ResponseStatus();
         bool success = responseStatus.success ?? false;
         if (success) {
+          Get.snackbar(
+            "Done",
+            "Post deleted.",
+            colorText: whiteColor,
+            backgroundColor: Colors.black54,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           allPost.removeAt(index);
           getDeletedPost();
           deletingPost.value = false;
@@ -263,6 +274,13 @@ class BlogPostController extends GetxController {
         final responseStatus = response.data != null ? response.data as ResponseStatus : ResponseStatus();
         bool success = responseStatus.success ?? false;
         if (success) {
+          Get.snackbar(
+            "Done",
+            "Post permanently deleted.",
+            colorText: whiteColor,
+            backgroundColor: Colors.black54,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           deletedPost.removeAt(index);
           deletingPost.value = false;
         } else {
@@ -281,6 +299,7 @@ class BlogPostController extends GetxController {
   }
 
   getDeletedPost() async {
+    getDeletedPosts.value = true;
     var response = await _postService.getdeletedPost();
     if (response.error == null) {
       var postList = response.data != null ? response.data as List<dynamic> : [];
@@ -289,13 +308,108 @@ class BlogPostController extends GetxController {
       for (var item in postList) {
         deletedPost.add(item);
       }
+      getDeletedPosts.value = false;
     } else if (response.error == UN_AUTHERNTICATED) {
       logOut();
+      getDeletedPosts.value = false;
+    } else {
+      getDeletedPosts.value = false;
+    }
+  }
+
+  savePost(String postId) async {
+    if (!savingPost.value) {
+      savingPost.value = true;
+
+      final response = await _postService.savePost(postId);
+
+      if (response.error == null) {
+        final responseStatus = response.data != null ? response.data as ResponseStatus : ResponseStatus();
+        bool success = responseStatus.success ?? false;
+        if (success) {
+          Get.snackbar(
+            "Done",
+            "Post saved successfully",
+            colorText: whiteColor,
+            backgroundColor: Colors.black54,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          getSavedPost();
+          savingPost.value = false;
+        } else {
+          showError(error: response.error ?? "");
+          savingPost.value = false;
+        }
+        savingPost.value = false;
+      } else if (response.error == UN_AUTHERNTICATED) {
+        logOut();
+        savingPost.value = false;
+      } else {
+        showError(error: response.error ?? "");
+        savingPost.value = false;
+      }
+    }
+  }
+
+  removeSavedPost(String postId, int index) async {
+    if (!removingSavePost.value) {
+      removingSavePost.value = true;
+
+      final response = await _postService.removeSavedPost(postId);
+
+      if (response.error == null) {
+        final responseStatus = response.data != null ? response.data as ResponseStatus : ResponseStatus();
+        bool success = responseStatus.success ?? false;
+        if (success) {
+          savedPost.removeAt(index);
+
+          Get.snackbar(
+            "Done",
+            "Post removed successfully.",
+            colorText: whiteColor,
+            backgroundColor: Colors.black54,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          removingSavePost.value = false;
+        } else {
+          showError(error: response.error ?? "");
+          removingSavePost.value = false;
+        }
+        removingSavePost.value = false;
+      } else if (response.error == UN_AUTHERNTICATED) {
+        logOut();
+        removingSavePost.value = false;
+      } else {
+        showError(error: response.error ?? "");
+        removingSavePost.value = false;
+      }
+    }
+  }
+
+  getSavedPost() async {
+    if (!getSavingPosts.value) {
+      getSavingPosts.value = true;
+      var response = await _postService.getSavedPost();
+      if (response.error == null) {
+        var postList = response.data != null ? response.data as List<dynamic> : [];
+
+        savedPost.clear();
+        for (var item in postList) {
+          savedPost.add(item);
+        }
+        getSavingPosts.value = false;
+      } else if (response.error == UN_AUTHERNTICATED) {
+        logOut();
+        getSavingPosts.value = false;
+      } else {
+        getSavingPosts.value = false;
+      }
     }
   }
 
   @override
   void onInit() {
+    getSavedPost();
     getDeletedPost();
     getAllPost();
     super.onInit();

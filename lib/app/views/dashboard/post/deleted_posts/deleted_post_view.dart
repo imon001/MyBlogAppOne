@@ -28,6 +28,7 @@ class DeletedPostView extends StatelessWidget {
                       blogPost: blogPost,
                       index: index,
                       isDeleted: true,
+                      isSaved: false,
                     );
                   }),
                 )

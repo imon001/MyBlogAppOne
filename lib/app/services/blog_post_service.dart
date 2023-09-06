@@ -247,4 +247,80 @@ class BlogPostService {
     }
     return apiResponse;
   }
+
+  Future<ApiResponse> savePost(String postId) async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      var url = Uri.parse(savePostApi + postId);
+      String token = await getToken();
+      var headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+      var response = await http.get(url, headers: headers);
+      var json = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        apiResponse.data = ResponseStatus.fromJson(json);
+      } else {
+        apiResponse.error = handleError(response.statusCode, json);
+      }
+    } catch (e) {
+      apiResponse.error = SOMETHING_WENT_WRONG;
+    }
+    return apiResponse;
+  }
+
+  Future<ApiResponse> getSavedPost() async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      var url = Uri.parse(getSavedPostApi);
+      String token = await getToken();
+
+      var headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      var response = await http.get(
+        url,
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        // print(response.statusCode);
+        var json = jsonDecode(response.body);
+        //log(json.toString());
+        apiResponse.data = json.map((item) => BlogPost.fromJson(item)).toList();
+        apiResponse.data as List<dynamic>;
+      } else {
+        var json = jsonDecode(response.body);
+
+        apiResponse.error = handleError(response.statusCode, json);
+      }
+    } catch (e) {
+      apiResponse.error = SOMETHING_WENT_WRONG;
+    }
+    return apiResponse;
+  }
+
+  Future<ApiResponse> removeSavedPost(String postId) async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      var url = Uri.parse(removedSavedPostApi + postId);
+      String token = await getToken();
+      var headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+      var response = await http.delete(url, headers: headers);
+      var json = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        apiResponse.data = ResponseStatus.fromJson(json);
+      } else {
+        apiResponse.error = handleError(response.statusCode, json);
+      }
+    } catch (e) {
+      apiResponse.error = SOMETHING_WENT_WRONG;
+    }
+    return apiResponse;
+  }
 }
