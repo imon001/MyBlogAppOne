@@ -98,6 +98,9 @@ class PostCard extends StatelessWidget {
             case 'remove':
               Get.find<BlogPostController>().removeSavedPost(blogPost.id ?? "", index);
               break;
+            case 'restore':
+              Get.find<BlogPostController>().restorePost(blogPost.id ?? "", index);
+              break;
 
             default:
           }
@@ -131,6 +134,13 @@ class PostCard extends StatelessWidget {
                   value: 'delete',
                   child: Text(
                     'Delete',
+                    style: TextStyle(fontSize: 16.sp),
+                  )),
+            if (owner.id == userId && isDeleted)
+              PopupMenuItem(
+                  value: 'restore',
+                  child: Text(
+                    'Restore Post',
                     style: TextStyle(fontSize: 16.sp),
                   )),
             if (owner.id == userId && isDeleted)

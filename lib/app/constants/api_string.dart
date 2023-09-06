@@ -23,6 +23,8 @@ const deletePostPermanentApi = '$baseUrl/delete-post-permanent/';
 const savePostApi = '$baseUrl/save-post/';
 const getSavedPostApi = '$baseUrl/get-saved-posts';
 const removedSavedPostApi = '$baseUrl/remove-saved-post/';
+const restorePostApi = '$baseUrl/restore-post/';
+
 //deletedBranch
 const createPostApi = '$baseUrl/post-create';
 const editPostApi = '$baseUrl/post-edit';

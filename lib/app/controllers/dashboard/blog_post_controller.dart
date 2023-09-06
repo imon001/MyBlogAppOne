@@ -20,6 +20,7 @@ class BlogPostController extends GetxController {
   var loadingData = false.obs;
   var likeUnlikeLoading = false.obs;
   var deletingPost = false.obs;
+  var restoringPost = false.obs;
   var getDeletedPosts = false.obs;
   var savingPost = false.obs;
   var removingSavePost = false.obs;
@@ -403,6 +404,41 @@ class BlogPostController extends GetxController {
         getSavingPosts.value = false;
       } else {
         getSavingPosts.value = false;
+      }
+    }
+  }
+
+  restorePost(String postId, int index) async {
+    if (!restoringPost.value) {
+      restoringPost.value = true;
+
+      final response = await _postService.restorePost(postId);
+
+      if (response.error == null) {
+        final responseStatus = response.data != null ? response.data as ResponseStatus : ResponseStatus();
+        bool success = responseStatus.success ?? false;
+        if (success) {
+          deletedPost.removeAt(index);
+          getAllPost();
+          Get.snackbar(
+            "Done",
+            responseStatus.message ?? "",
+            colorText: whiteColor,
+            backgroundColor: Colors.black54,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          restoringPost.value = false;
+        } else {
+          showError(error: response.error ?? "");
+          restoringPost.value = false;
+        }
+        restoringPost.value = false;
+      } else if (response.error == UN_AUTHERNTICATED) {
+        logOut();
+        restoringPost.value = false;
+      } else {
+        showError(error: response.error ?? "");
+        restoringPost.value = false;
       }
     }
   }
