@@ -468,6 +468,30 @@ class BlogPostController extends GetxController {
     }
   }
 
+  searchPost(String keywords) async {
+    if (keywords.isEmpty) {
+      getAllPost();
+    } else {
+      if (!loadingData.value) {
+        loadingData.value = true;
+        final response = await _postService.searchPost(keywords);
+        if (response.error == null) {
+          var postList = response.data != null ? response.data as List<dynamic> : [];
+          allPost.clear();
+          for (var item in postList) {
+            allPost.add(item);
+          }
+          loadingData.value = false;
+        } else if (response.error == UN_AUTHERNTICATED) {
+          logOut();
+          loadingData.value = false;
+        } else {
+          loadingData.value = false;
+        }
+      }
+    }
+  }
+
   @override
   void onInit() {
     getSavedPost();

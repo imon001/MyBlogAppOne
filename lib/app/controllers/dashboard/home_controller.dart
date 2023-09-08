@@ -12,6 +12,7 @@ class HomeController extends GetxController {
   final _homeService = HomeService();
 
   var selectedCategoryId = "";
+  var isSearching = false.obs;
 
   getCategories() async {
     var response = await _homeService.getCategories();
