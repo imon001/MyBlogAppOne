@@ -29,7 +29,10 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => PostDetailsView(blogPost: blogPost));
+        Get.to(() => PostDetailsView(
+              blogPost: blogPost,
+              deletedPost: isDeleted,
+            ));
       },
       child: Card(
         elevation: 3,

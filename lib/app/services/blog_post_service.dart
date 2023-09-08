@@ -345,4 +345,36 @@ class BlogPostService {
     }
     return apiResponse;
   }
+
+  Future<ApiResponse> getPostBycategory(String categoryId) async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      var url = Uri.parse(getCategoryPostApi + categoryId);
+      String token = await getToken();
+
+      var headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      var response = await http.get(
+        url,
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        // print(response.statusCode);
+        var json = jsonDecode(response.body);
+        //log(json.toString());
+        apiResponse.data = json.map((item) => BlogPost.fromJson(item)).toList();
+        apiResponse.data as List<dynamic>;
+      } else {
+        var json = jsonDecode(response.body);
+
+        apiResponse.error = handleError(response.statusCode, json);
+      }
+    } catch (e) {
+      apiResponse.error = SOMETHING_WENT_WRONG;
+    }
+    return apiResponse;
+  }
 }

@@ -48,6 +48,31 @@ class BlogPostController extends GetxController {
   var updatingPost = false.obs;
 
   //var selectedCategoryId = "";
+
+  getPostByCategory(String categoryId) async {
+    if (categoryId.isEmpty) {
+      getAllPost();
+    } else {
+      if (!loadingData.value) {
+        loadingData.value = true;
+        final response = await _postService.getPostBycategory(categoryId);
+        if (response.error == null) {
+          var postList = response.data != null ? response.data as List<dynamic> : [];
+          allPost.clear();
+          for (var item in postList) {
+            allPost.add(item);
+          }
+          loadingData.value = false;
+        } else if (response.error == UN_AUTHERNTICATED) {
+          logOut();
+          loadingData.value = false;
+        } else {
+          loadingData.value = false;
+        }
+      }
+    }
+  }
+
   editPost(String postId) async {
     if (!updatingPost.value) {
       updatingPost.value = true;

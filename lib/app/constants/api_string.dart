@@ -24,6 +24,7 @@ const savePostApi = '$baseUrl/save-post/';
 const getSavedPostApi = '$baseUrl/get-saved-posts';
 const removedSavedPostApi = '$baseUrl/remove-saved-post/';
 const restorePostApi = '$baseUrl/restore-post/';
+const getCategoryPostApi = '$baseUrl/get-posts-by-category/';
 
 //deletedBranch
 const createPostApi = '$baseUrl/post-create';
