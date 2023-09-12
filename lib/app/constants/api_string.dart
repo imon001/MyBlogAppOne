@@ -1,11 +1,11 @@
 //baseUrl
-//const baseUrl = 'http://192.169.0.112:5000/api/v1/user';
+const baseUrl = 'http://192.169.0.112:3000/api/v1/user';
 
-const baseUrl = 'http://192.168.0.101:3000/api/v1/user';
+//const baseUrl = 'http://192.168.0.101:3000/api/v1/user';
 
 //imageUrl
-const imageBaseUrl = 'http://192.168.0.101:3000/';
-//const imageBaseUrl = 'http://192.169.0.112:5000/';
+//const imageBaseUrl = 'http://192.168.0.101:3000/';
+const imageBaseUrl = 'http://192.169.0.112:3000/';
 
 //auth-apis
 const loginApi = '$baseUrl/login';
@@ -26,13 +26,12 @@ const removedSavedPostApi = '$baseUrl/remove-saved-post/';
 const restorePostApi = '$baseUrl/restore-post/';
 const getCategoryPostApi = '$baseUrl/get-posts-by-category/';
 const searchOptionApi = '$baseUrl/search-posts/';
-
-//deletedBranch
 const createPostApi = '$baseUrl/post-create';
 const editPostApi = '$baseUrl/post-edit';
 
-
-
+//comment
+const getCommentApi = '$baseUrl/get-comments/';
+const createCommentApi = '$baseUrl/create-comment';
 
 
 

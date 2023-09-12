@@ -53,6 +53,7 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
+  @override //this is extra override added
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Colors.red,

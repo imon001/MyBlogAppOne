@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors
-
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:blog/app/controllers/dashboard/comment_controller.dart';
+import 'package:blog/app/views/dashboard/home/widget/comment_card.dart';
 import 'package:blog/app/views/dashboard/post/edit%20post/edit_post_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,7 @@ import '../../../constants/colors.dart';
 import '../../../constants/helper_function.dart';
 import '../../../models/auth/user.dart';
 import '../../../models/dashboard/blog_post.dart';
+import '../../../models/dashboard/comment.dart';
 import '../../../models/dashboard/post_category.dart';
 
 class PostDetailsView extends StatelessWidget {
@@ -21,6 +23,8 @@ class PostDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User owner = blogPost.user != null ? blogPost.user as User : User();
+
+    Get.find<CommentController>().getComments(blogPost.id ?? "");
 
     return Scaffold(
       appBar: AppBar(
@@ -61,9 +65,11 @@ class PostDetailsView extends StatelessWidget {
               height: 5,
             ),
             _commentsDetails(),
+            SizedBox(height: 10),
+            _comments(),
             SizedBox(
               height: 20,
-            )
+            ),
           ],
         ),
       )),
@@ -148,47 +154,46 @@ class PostDetailsView extends StatelessWidget {
     final user = blogPost.user != null ? blogPost.user as User : User();
     var avatar = user.avatar ?? "";
     var avatarLink = imageBaseUrl + avatar;
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0.w),
-      child: Column(
-        children: [
-          Divider(),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.0.w),
-            child: Row(
-              children: [
-                if (avatar.isEmpty)
-                  Container(
-                    height: 70.w,
-                    width: 70.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red,
-                      image: DecorationImage(
-                        image: AssetImage(
-                          'assets/images/default_user.jpg',
-                        ),
-                        fit: BoxFit.cover,
+    return Column(
+      children: [
+        Divider(),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.0.w),
+          child: Row(
+            children: [
+              if (avatar.isEmpty)
+                Container(
+                  height: 70.w,
+                  width: 70.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                    image: DecorationImage(
+                      image: AssetImage(
+                        'assets/images/default_user.jpg',
                       ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                if (avatar.isNotEmpty)
-                  Container(
-                    height: 70.w,
-                    width: 70.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red,
-                      image: DecorationImage(
-                        image: NetworkImage(avatarLink),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                SizedBox(
-                  width: 10.w,
                 ),
-                Column(
+              if (avatar.isNotEmpty)
+                Container(
+                  height: 70.w,
+                  width: 70.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                    image: DecorationImage(
+                      image: NetworkImage(avatarLink),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -197,6 +202,8 @@ class PostDetailsView extends StatelessWidget {
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w500,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
                       height: 3.w,
@@ -217,13 +224,13 @@ class PostDetailsView extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
-          Divider(),
-        ],
-      ),
+        ),
+        Divider(),
+      ],
     );
   }
 
@@ -241,4 +248,19 @@ class PostDetailsView extends StatelessWidget {
             textAlign: TextAlign.center,
           );
   }
+
+  Widget _comments() => Column(
+        children: [
+          Obx(() {
+            final comments = Get.find<CommentController>().comments;
+
+            return Column(
+              children: List.generate(comments.length, (index) {
+                Comment comment = comments[index];
+                return CommentCard(comment: comment);
+              }),
+            );
+          })
+        ],
+      );
 }

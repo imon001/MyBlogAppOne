@@ -297,7 +297,9 @@ class PostCard extends StatelessWidget {
         ),
         Expanded(
           child: MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(() => PostDetailsView(blogPost: blogPost, deletedPost: isDeleted));
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

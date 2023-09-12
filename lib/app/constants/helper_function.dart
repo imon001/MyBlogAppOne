@@ -129,3 +129,26 @@ getCustomeDate(String date) {
 String get userId {
   return _storage.read(USER_ID) ?? "";
 }
+
+getTimeAgo(String time) {
+  if (time.isEmpty) {
+    return '';
+  } else {
+    DateTime dbDate = DateTime.parse(time);
+    final currDate = DateTime.now();
+
+    var difference = currDate.difference(dbDate).inMinutes;
+
+    if (difference < 1) {
+      return "Just Now";
+    } else if (difference < 60) {
+      return "$difference min ago";
+    } else if (difference < 1440) {
+      return "${(difference / 60).toStringAsFixed(0)} hr ago";
+    } else if (difference < 43200) {
+      return "${(difference / 1440).toStringAsFixed(0)} days ago";
+    } else if (difference < 518400) {
+      return "${(difference / 43200).toStringAsFixed(0)} Months ago";
+    }
+  }
+}
