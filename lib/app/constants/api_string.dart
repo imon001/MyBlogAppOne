@@ -32,6 +32,7 @@ const editPostApi = '$baseUrl/post-edit';
 //comment
 const getCommentApi = '$baseUrl/get-comments/';
 const createCommentApi = '$baseUrl/create-comment';
+const deleteCommentApi = '$baseUrl/delete-comment/';
 
 
 

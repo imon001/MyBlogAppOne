@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_field
 import 'package:blog/app/controllers/dashboard/comment_controller.dart';
 import 'package:blog/app/views/dashboard/home/widget/comment_card.dart';
 import 'package:blog/app/views/dashboard/post/edit%20post/edit_post_view.dart';
@@ -14,17 +14,41 @@ import '../../../models/dashboard/blog_post.dart';
 import '../../../models/dashboard/comment.dart';
 import '../../../models/dashboard/post_category.dart';
 
-class PostDetailsView extends StatelessWidget {
-  const PostDetailsView({super.key, required this.blogPost, required this.deletedPost});
+class PostDetailsView extends StatefulWidget {
+  const PostDetailsView({super.key, required this.blogPost, required this.deletedPost, required this.postIndex});
 
   final BlogPost blogPost;
   final bool deletedPost;
+  final int postIndex;
+
+  @override
+  State<PostDetailsView> createState() => _PostDetailsViewState();
+}
+
+class _PostDetailsViewState extends State<PostDetailsView> {
+  final _commentKey = GlobalKey<FormState>();
+  final _commentController = TextEditingController();
+  @override
+  void dispose() {
+    disposeVariables();
+    super.dispose();
+  }
+
+  disposeVariables() {
+    Future.delayed(Duration(milliseconds: 300)).then((value) {
+      if (Get.isRegistered<CommentController>()) {
+        final controller = Get.find<CommentController>();
+        controller.comments.clear();
+      }
+      _commentController.dispose();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    User owner = blogPost.user != null ? blogPost.user as User : User();
+    User owner = widget.blogPost.user != null ? widget.blogPost.user as User : User();
 
-    Get.find<CommentController>().getComments(blogPost.id ?? "");
+    Get.find<CommentController>().getComments(widget.blogPost.id ?? "");
 
     return Scaffold(
       appBar: AppBar(
@@ -33,11 +57,11 @@ class PostDetailsView extends StatelessWidget {
         backgroundColor: kBaseColor,
         elevation: 0,
         actions: [
-          if (owner.id == userId && !deletedPost)
+          if (owner.id == userId && !widget.deletedPost)
             IconButton(
                 onPressed: () {
                   Get.to(() => EditPostView(
-                        blogPost: blogPost,
+                        blogPost: widget.blogPost,
                       ));
                 },
                 icon: Icon(Icons.edit_note))
@@ -64,7 +88,7 @@ class PostDetailsView extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            _commentsDetails(),
+            // _commentsDetails(),
             SizedBox(height: 10),
             _comments(),
             SizedBox(
@@ -77,13 +101,13 @@ class PostDetailsView extends StatelessWidget {
   }
 
   Widget _titleCategoryDateAndDescription() {
-    final category = blogPost.category != null ? blogPost.category as PostCategory : PostCategory();
+    final category = widget.blogPost.category != null ? widget.blogPost.category as PostCategory : PostCategory();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          blogPost.title ?? "",
+          widget.blogPost.title ?? "",
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.sp),
         ),
         SizedBox(
@@ -97,7 +121,7 @@ class PostDetailsView extends StatelessWidget {
               style: TextStyle(fontSize: 16.sp),
             ),
             Text(
-              getCustomeDate(blogPost.createdAt ?? ""),
+              getCustomeDate(widget.blogPost.createdAt ?? ""),
               style: TextStyle(fontSize: 16.sp),
             ),
           ],
@@ -106,7 +130,7 @@ class PostDetailsView extends StatelessWidget {
           height: 10.w,
         ),
         Text(
-          blogPost.description ?? "",
+          widget.blogPost.description ?? "",
           style: TextStyle(fontSize: 16.sp),
           textAlign: TextAlign.justify,
         )
@@ -115,7 +139,7 @@ class PostDetailsView extends StatelessWidget {
   }
 
   Widget _thumbnail() {
-    final thumbnail = blogPost.thumbnail != null ? blogPost.thumbnail as String : "";
+    final thumbnail = widget.blogPost.thumbnail != null ? widget.blogPost.thumbnail as String : "";
     final thumbnailLink = imageBaseUrl + thumbnail;
     return thumbnail.isEmpty
         ? Container()
@@ -130,7 +154,7 @@ class PostDetailsView extends StatelessWidget {
   }
 
   Widget _images() {
-    final images = (blogPost.images != null) || (blogPost.images!.isNotEmpty) ? blogPost.images as List<String> : <String>[];
+    final images = (widget.blogPost.images != null) || (widget.blogPost.images!.isNotEmpty) ? widget.blogPost.images as List<String> : <String>[];
     return Column(
       children: List.generate(images.length, (index) {
         String image = images[index];
@@ -151,7 +175,7 @@ class PostDetailsView extends StatelessWidget {
   }
 
   Widget _authorDetails() {
-    final user = blogPost.user != null ? blogPost.user as User : User();
+    final user = widget.blogPost.user != null ? widget.blogPost.user as User : User();
     var avatar = user.avatar ?? "";
     var avatarLink = imageBaseUrl + avatar;
     return Column(
@@ -234,20 +258,20 @@ class PostDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _commentsDetails() {
-    int comments = blogPost.commentCount ?? 0;
+  // Widget _commentsDetails() {
+  //   int comments = widget.blogPost.commentCount ?? 0;
 
-    return comments > 0
-        ? Text(
-            'total ($comments) comments',
-            style: TextStyle(fontSize: 16.sp),
-          )
-        : Text(
-            'No comments yet!',
-            style: TextStyle(fontSize: 16.sp),
-            textAlign: TextAlign.center,
-          );
-  }
+  //   return comments > 0
+  //       ? Text(
+  //           'total ($comments) comments',
+  //           style: TextStyle(fontSize: 16.sp),
+  //         )
+  //       : Text(
+  //           'No comments yet!',
+  //           style: TextStyle(fontSize: 16.sp),
+  //           textAlign: TextAlign.center,
+  //         );
+  // }
 
   Widget _comments() => Column(
         children: [
@@ -255,12 +279,75 @@ class PostDetailsView extends StatelessWidget {
             final comments = Get.find<CommentController>().comments;
 
             return Column(
-              children: List.generate(comments.length, (index) {
-                Comment comment = comments[index];
-                return CommentCard(comment: comment);
-              }),
+              children: [
+                comments.isEmpty
+                    ? Text(
+                        'No comments yet!',
+                        style: TextStyle(fontSize: 16.sp),
+                        textAlign: TextAlign.center,
+                      )
+                    : Column(
+                        children: List.generate(comments.length, (index) {
+                          Comment comment = comments[index];
+                          return CommentCard(
+                            comment: comment,
+                            commentIndex: index,
+                            postIndex: widget.postIndex,
+                          );
+                        }),
+                      ),
+                commentEntryCard()
+              ],
             );
           })
         ],
       );
+
+  Widget commentEntryCard() {
+    final controller = Get.find<CommentController>();
+    return Form(
+      key: _commentKey,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        child: TextFormField(
+          style: TextStyle(fontSize: 14.w),
+          decoration: InputDecoration(
+            hintText: "Comment",
+            hintStyle: TextStyle(fontSize: 14.w),
+            suffixIcon: IconButton(
+              onPressed: () async {
+                if (_commentKey.currentState!.validate()) {
+                  _commentKey.currentState!.save();
+                  bool created = await controller.createComment(widget.blogPost.id ?? "", widget.postIndex);
+
+                  if (created) {
+                    _commentController.clear();
+                    controller.commentText = "";
+                    controller.isCommentTyping.value = false;
+                  }
+                }
+              },
+              icon: Obx(() {
+                return Icon(
+                  Icons.send,
+                  color: controller.isCommentTyping.value ? kBaseColor : Colors.black87,
+                );
+              }),
+            ),
+          ),
+          controller: _commentController,
+          onSaved: (value) {
+            controller.commentText = value ?? "";
+          },
+          onChanged: (value) {
+            if (value.isNotEmpty) {
+              controller.isCommentTyping.value = true;
+            } else {
+              controller.isCommentTyping.value = false;
+            }
+          },
+        ),
+      ),
+    );
+  }
 }

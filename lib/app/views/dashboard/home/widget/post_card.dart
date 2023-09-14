@@ -32,6 +32,7 @@ class PostCard extends StatelessWidget {
         Get.to(() => PostDetailsView(
               blogPost: blogPost,
               deletedPost: isDeleted,
+              postIndex: index,
             ));
       },
       child: Card(
@@ -298,7 +299,11 @@ class PostCard extends StatelessWidget {
         Expanded(
           child: MaterialButton(
             onPressed: () {
-              Get.to(() => PostDetailsView(blogPost: blogPost, deletedPost: isDeleted));
+              Get.to(() => PostDetailsView(
+                    blogPost: blogPost,
+                    deletedPost: isDeleted,
+                    postIndex: index,
+                  ));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
