@@ -1,11 +1,11 @@
 //baseUrl
-const baseUrl = 'http://192.169.0.112:3000/api/v1/user';
+//const baseUrl = 'http://192.169.0.112:3000/api/v1/user';
 
-//const baseUrl = 'http://192.168.0.101:3000/api/v1/user';
+const baseUrl = 'http://192.168.0.101:3000/api/v1/user';
 
 //imageUrl
-//const imageBaseUrl = 'http://192.168.0.101:3000/';
-const imageBaseUrl = 'http://192.169.0.112:3000/';
+const imageBaseUrl = 'http://192.168.0.101:3000/';
+//const imageBaseUrl = 'http://192.169.0.112:3000/';
 
 //auth-apis
 const loginApi = '$baseUrl/login';
@@ -33,6 +33,12 @@ const editPostApi = '$baseUrl/post-edit';
 const getCommentApi = '$baseUrl/get-comments/';
 const createCommentApi = '$baseUrl/create-comment';
 const deleteCommentApi = '$baseUrl/delete-comment/';
+
+//replies
+const createReplyApi = '$baseUrl/create-reply';
+const deleteReplyApi = '$baseUrl/delete-reply/';
+const getReplyApi = '$baseUrl/get-replies/';
+
 
 
 

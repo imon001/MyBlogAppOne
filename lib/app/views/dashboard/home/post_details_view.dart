@@ -296,14 +296,14 @@ class _PostDetailsViewState extends State<PostDetailsView> {
                           );
                         }),
                       ),
-                commentEntryCard()
+                _commentEntryCard()
               ],
             );
           })
         ],
       );
 
-  Widget commentEntryCard() {
+  Widget _commentEntryCard() {
     final controller = Get.find<CommentController>();
     return Form(
       key: _commentKey,
