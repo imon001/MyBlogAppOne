@@ -39,11 +39,11 @@ class SingInController extends GetxController {
         if (response.error == null) {
           User user = response.data != null ? response.data as User : User();
 
-          _storage.write(IS_LOGGED_IN, true);
-          _storage.write(USER_NAME, user.name);
-          _storage.write(USER_EMAIL, user.email);
-          _storage.write(USER_AVATAR, user.avatar);
-          _storage.write(USER_ID, user.id);
+          await _storage.write(IS_LOGGED_IN, true);
+          await _storage.write(USER_NAME, user.name);
+          await _storage.write(USER_ID, user.id);
+          await _storage.write(USER_EMAIL, user.email);
+          await _storage.write(USER_AVATAR, user.avatar);
           await _secureStorage.write(key: AUTH_TOKEN, value: user.token);
           isClickedSingInView.value = false;
           Get.offAll(() => const DashboardView());

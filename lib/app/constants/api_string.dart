@@ -39,11 +39,12 @@ const createReplyApi = '$baseUrl/create-reply';
 const deleteReplyApi = '$baseUrl/delete-reply/';
 const getReplyApi = '$baseUrl/get-replies/';
 
-
-
-
-
-
+//profile
+const userDataApi = baseUrl;
+const getMyPostApi = '$baseUrl/my-posts';
+const updatePasswordApi = '$baseUrl/update-pass';
+const updateProfileApi = '$baseUrl/update-profile';
+const updateProfilePhotoApi = '$baseUrl/update-profile-photo';
 
 
 

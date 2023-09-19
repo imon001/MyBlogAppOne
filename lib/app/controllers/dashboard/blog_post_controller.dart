@@ -1,3 +1,4 @@
+import 'package:blog/app/controllers/dashboard/profile_controller.dart';
 import 'package:blog/app/models/dashboard/like_unlike.dart';
 import 'package:blog/app/models/response_status.dart';
 import 'package:blog/app/views/dashboard/dashboard/dashboard_view.dart';
@@ -16,8 +17,10 @@ class BlogPostController extends GetxController {
   var allPost = <BlogPost>[].obs;
   var deletedPost = <BlogPost>[].obs;
   var savedPost = <BlogPost>[].obs;
+  var myPosts = <BlogPost>[].obs;
 
   var loadingData = false.obs;
+  var gettingMyPost = false.obs;
   var likeUnlikeLoading = false.obs;
   var deletingPost = false.obs;
   var restoringPost = false.obs;
@@ -147,12 +150,15 @@ class BlogPostController extends GetxController {
             bool success = responseStatus.success ?? false;
 
             if (success) {
+              int postCount = responseStatus.data != null ? responseStatus.data as int : 0;
               title = "";
               description = "";
               selectedCategoryId = "";
               thumbnailPaths.value = "";
               imagesPaths.clear();
               getAllPost();
+              getMyPosts();
+              Get.find<ProfileController>().user.value.postCount = postCount;
               Get.back();
               creatingPost.value = false;
             } else {
@@ -492,11 +498,35 @@ class BlogPostController extends GetxController {
     }
   }
 
-  @override
-  void onInit() {
+  getMyPosts() async {
+    gettingMyPost.value = true;
+    var response = await _postService.getMyPost();
+    if (response.error == null) {
+      var postList = response.data != null ? response.data as List<dynamic> : [];
+
+      myPosts.clear();
+      for (var item in postList) {
+        myPosts.add(item);
+      }
+      gettingMyPost.value = false;
+    } else if (response.error == UN_AUTHERNTICATED) {
+      logOut();
+      gettingMyPost.value = false;
+    } else {
+      gettingMyPost.value = false;
+    }
+  }
+
+  getData() {
     getSavedPost();
     getDeletedPost();
     getAllPost();
+    getMyPosts();
+  }
+
+  @override
+  void onInit() {
+    getData();
     super.onInit();
   }
 }

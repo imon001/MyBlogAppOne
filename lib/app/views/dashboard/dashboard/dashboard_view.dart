@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unused_import, unused_field
 
 import 'package:blog/app/controllers/dashboard/comment_controller.dart';
+import 'package:blog/app/controllers/dashboard/profile_controller.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +25,7 @@ class _DashboardViewState extends State<DashboardView> {
   final _homeController = Get.put(HomeController());
   final _blogPostController = Get.put(BlogPostController());
   final _commentController = Get.put(CommentController());
+  final _profileController = Get.put(ProfileController());
   int selectedIndex = 0;
 
   List<Widget> pages = [HomeView(), ProfileView()];

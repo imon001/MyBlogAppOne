@@ -7,25 +7,31 @@ import '../../../../controllers/dashboard/blog_post_controller.dart';
 import '../../../../models/dashboard/blog_post.dart';
 import '../../home/widget/post_card.dart';
 
-class SavePostView extends StatefulWidget {
-  const SavePostView({super.key});
+class MyPostView extends StatefulWidget {
+  const MyPostView({super.key});
 
   @override
-  State<SavePostView> createState() => _SavePostViewState();
+  State<MyPostView> createState() => _MyPostViewState();
 }
 
-class _SavePostViewState extends State<SavePostView> {
+class _MyPostViewState extends State<MyPostView> {
+  @override
+  void initState() {
+    Get.find<BlogPostController>().getMyPosts();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Posts'),
+        title: const Text('My Posts'),
         centerTitle: true,
         elevation: 5,
       ),
       body: SafeArea(child: Obx(() {
-        var savedPost = Get.find<BlogPostController>().savedPost;
-        var loading = Get.find<BlogPostController>().getSavingPosts.value;
+        var myPost = Get.find<BlogPostController>().myPosts;
+        var loading = Get.find<BlogPostController>().gettingMyPost.value;
 
         return loading
             ? Center(
@@ -35,7 +41,7 @@ class _SavePostViewState extends State<SavePostView> {
                   child: CircularProgressIndicator(),
                 ),
               )
-            : savedPost.isEmpty
+            : myPost.isEmpty
                 ? Center(
                     child: Text(
                       'No data found:(',
@@ -43,13 +49,13 @@ class _SavePostViewState extends State<SavePostView> {
                     ),
                   )
                 : ListView(
-                    children: List.generate(savedPost.length, (index) {
-                      BlogPost post = savedPost[index];
+                    children: List.generate(myPost.length, (index) {
+                      BlogPost post = myPost[index];
                       return PostCard(
                         blogPost: post,
                         index: index,
                         isDeleted: false,
-                        isSaved: true,
+                        isSaved: false,
                       );
                     }),
                   );

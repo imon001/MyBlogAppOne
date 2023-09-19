@@ -8,6 +8,7 @@ const USER_EMAIL = "userEmail";
 const USER_AVATAR = "userAvatar";
 const AUTH_TOKEN = "authToken";
 const USER_ID = "userId";
+const DEFAULT_AVATAR = "assets/images/default_user.jpg";
 
 //errors
 const SERVER_ERROR = 'internal server error';

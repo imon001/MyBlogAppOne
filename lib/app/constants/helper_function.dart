@@ -60,21 +60,54 @@ void showError({required error, String? title}) {
         ],
       ));
 }
+
 //
 //
 //
+void showCustomDialog({required String message, required String title}) {
+  Get.defaultDialog(
+      title: title,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 16.sp,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 5.w,
+          ),
+          MaterialButton(
+            color: kBaseColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                5.r,
+              ),
+            ),
+            onPressed: () => Get.back(),
+            child: Text(
+              "Ok",
+              style: TextStyle(fontSize: 18.sp),
+            ),
+          )
+        ],
+      ));
+}
 //
 //
 //
 //
 //
 
-void logOut() {
-  _storage.remove(IS_LOGGED_IN);
-  _storage.remove(USER_NAME);
-  _storage.remove(USER_EMAIL);
-  _storage.remove(USER_AVATAR);
-  _storage.remove(USER_ID);
+Future<void> logOut() async {
+  await _storage.remove(IS_LOGGED_IN);
+  await _storage.remove(USER_NAME);
+  await _storage.remove(USER_EMAIL);
+  await _storage.remove(USER_AVATAR);
+  await _storage.remove(USER_ID);
 
   _secureStorage.delete(key: AUTH_TOKEN);
 

@@ -17,26 +17,37 @@ class DeletedPostView extends StatelessWidget {
         centerTitle: true,
         elevation: 5,
       ),
-      body: SafeArea(child: Obx(
-        () {
-          var deletedPost = Get.find<BlogPostController>().deletedPost;
-          return deletedPost.isNotEmpty
-              ? ListView(
-                  children: List.generate(deletedPost.length, (index) {
-                    BlogPost blogPost = deletedPost[index];
-                    return PostCard(
-                      blogPost: blogPost,
-                      index: index,
-                      isDeleted: true,
-                      isSaved: false,
-                    );
-                  }),
-                )
-              : Center(
-                  child: Text('Nothing found!'),
-                );
-        },
-      )),
+      body: SafeArea(child: Obx(() {
+        var deletedPost = Get.find<BlogPostController>().deletedPost;
+        var loading = Get.find<BlogPostController>().getDeletedPosts.value;
+
+        return loading
+            ? Center(
+                child: SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : deletedPost.isEmpty
+                ? Center(
+                    child: Text(
+                      'No data found:(',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  )
+                : ListView(
+                    children: List.generate(deletedPost.length, (index) {
+                      BlogPost post = deletedPost[index];
+                      return PostCard(
+                        blogPost: post,
+                        index: index,
+                        isDeleted: true,
+                        isSaved: false,
+                      );
+                    }),
+                  );
+      })),
     );
   }
 }

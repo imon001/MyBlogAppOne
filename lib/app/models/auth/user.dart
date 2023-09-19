@@ -36,7 +36,8 @@ class User {
     shortBio = user['shortBio'] ?? "";
     isDeleted = user['isDeleted'] ?? false;
     createdAt = user['createdAt'] ?? "";
-    postCount = user['posts'] != null ? user['posts'].length : 0;
+    postCount = user['postCount'] ?? 0;
+
     token = json['token'] ?? "";
   }
 }

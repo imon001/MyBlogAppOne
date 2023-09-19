@@ -110,7 +110,11 @@ class BlogPostService {
       final json = jsonDecode(responseString);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        apiResponse.data = ResponseStatus.fromJson(json);
+        //apiResponse.data = ResponseStatus.fromJson(json);
+
+        final status = ResponseStatus.fromJson(json);
+        status.data = json["postCount"] ?? 0;
+        apiResponse.data = status;
       } else {
         apiResponse.error = handleError(response.statusCode, json);
       }
@@ -382,6 +386,38 @@ class BlogPostService {
     ApiResponse apiResponse = ApiResponse();
     try {
       var url = Uri.parse(searchOptionApi + keyword);
+      String token = await getToken();
+
+      var headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      var response = await http.get(
+        url,
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        // print(response.statusCode);
+        var json = jsonDecode(response.body);
+        //log(json.toString());
+        apiResponse.data = json.map((item) => BlogPost.fromJson(item)).toList();
+        apiResponse.data as List<dynamic>;
+      } else {
+        var json = jsonDecode(response.body);
+
+        apiResponse.error = handleError(response.statusCode, json);
+      }
+    } catch (e) {
+      apiResponse.error = SOMETHING_WENT_WRONG;
+    }
+    return apiResponse;
+  }
+
+  Future<ApiResponse> getMyPost() async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      var url = Uri.parse(getMyPostApi);
       String token = await getToken();
 
       var headers = {
